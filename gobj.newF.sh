@@ -76,13 +76,18 @@ ${outdir:+"#include \"stdafx.h\""}
 
 ${outdir:+"G_BEGIN_DECLS"}
 
-// #region gobject definition
+#if 1 // gobject definition
 
 G_DECLARE_FINAL_TYPE( ${ClassName}, ${class_name}, ${NAMESPACE}, ${CLASS_NAME:${#NAMESPACE}+1}, ${ParentClassName} )
 
+enum {
+	PROP_0,
+	PROP_N,
+} PROPS;
+
 ${ClassName}* ${class_name}_new();
 
-${outdir:+"// #endregion"}
+${outdir:+"// #endif"}
 
 ${outdir:+"G_END_DECLS"}
 "
@@ -90,7 +95,7 @@ ${outdir:+"G_END_DECLS"}
 
 	local code_snippets_source="${outdir:+"#include \"${ClassName}.h\""}
 
-${outdir:+"// #region gobject definition"}
+${outdir:+"#if 1 // gobject definition"}
 
 struct _${ClassName} {
 	${ParentClassName} parent_instance;
@@ -98,11 +103,11 @@ struct _${ClassName} {
 
 G_DEFINE_TYPE( ${ClassName}, ${class_name}, ${parent_class_name}_get_type() )
 
-// #region static function
+#if 1 // static function
 
-// #endregion
+#endif
 
-// #region base class virtual function
+#if 1 // base class virtual function
 
 static void ${class_name}_dispose( GObject* object ) {
 	${ClassName}* self = ( ${ClassName}* )object;
@@ -126,17 +131,17 @@ static void ${class_name}_class_init(${ClassName}Class* klass) {
 	base_class->finalize = ${class_name}_finalize;
 }
 
-// #endregion
+#endif
 
-// #region public function
+#if 1 // public function
 
 ${ClassName}* ${class_name}_new() {
 	return g_object_new( ${class_name}_get_type(), NULL );
 }
 
-// #endregion
+#endif
 
-// #endregion
+#endif
 "
 ###############################
 
