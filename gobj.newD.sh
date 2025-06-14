@@ -49,6 +49,7 @@ function main(){
 		ParentClassName=$ClassName
 		ClassName=$outdir
 		unset outdir
+		no_outdir=" "
 	fi
 
 	local Class_Name=$(echo $ClassName | sed -e 's/\([[:upper:]]\)/_\1/g' -e 's/^.//')
@@ -78,11 +79,6 @@ ${outdir:+"G_BEGIN_DECLS"}
 
 G_DECLARE_DERIVABLE_TYPE( ${ClassName}, ${class_name}, ${NAMESPACE}, ${CLASS_NAME:${#NAMESPACE}+1}, ${ParentClassName} )
 
-enum {
-	PROP_0,
-	PROP_N,
-} PROPS;
-
 struct _${ClassName}Class {
 	${ParentClassName}Class parent_instance;
 };
@@ -103,13 +99,29 @@ typedef struct {
 	int spik;
 } ${ClassName}Private;
 
+enum {
+	${no_outdir:+${CLASS_NAME}_}PROP_0,
+	${no_outdir:+${CLASS_NAME}_}PROP_N,
+};
+
 G_DEFINE_TYPE_WITH_PRIVATE( ${ClassName}, ${class_name}, ${parent_class_name}_get_type() )
+
+#define SELF_PRIVATE ${class_name}_get_instance_private
+#define SELFDATAVAL( SELF, NAME ) ${ClassName}Private* NAME = SELF_PRIVATE( ( SELF ) )
+#define SELFDATA2( SELF ) ( ( ${ClassName}Private* )SELF_PRIVATE( ( SELF ) ) )
+#define SELFDATA SELFDATA2( self )
 
 #if 1 // static function
 
 #endif
 
 #if 1 // base class virtual function
+
+static void ${class_name}_constructed( GObject* object ) {
+	${ClassName}* self = ( ${ClassName}* )object;
+
+	G_OBJECT_CLASS (${class_name}_parent_class)->constructed(object);
+}
 
 static void ${class_name}_dispose( GObject* object ) {
 	${ClassName}* self = ( ${ClassName}* )object;
@@ -124,13 +136,14 @@ static void ${class_name}_finalize( GObject* object ) {
 }
 
 static void ${class_name}_init(${ClassName}* self) {
-	${ClassName}Private* priv = ${class_name}_get_instance_private( self );
+	${ClassName}Private* priv = SELFDATA;
 }
 
 static void ${class_name}_class_init(${ClassName}Class* klass) {
 	GObjectClass* base_class = (GObjectClass*)klass;
 	${ParentClassName}Class* parent_class = (${ParentClassName}Class*)klass;
 
+	base_class->constructed = ${class_name}_constructed;
 	base_class->dispose = ${class_name}_dispose;
 	base_class->finalize = ${class_name}_finalize;
 }
@@ -140,7 +153,8 @@ static void ${class_name}_class_init(${ClassName}Class* klass) {
 #if 1 // public function
 
 ${ClassName}* ${class_name}_new() {
-	return g_object_new( ${class_name}_get_type(), NULL );
+	${ClassName}* self = g_object_new( ${class_name}_get_type(), NULL );
+	return self;
 }
 
 #endif
