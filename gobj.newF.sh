@@ -77,11 +77,11 @@ ${outdir:+"#include \"stdafx.h\""}
 
 ${outdir:+"G_BEGIN_DECLS"}
 
-#if 1 // gobject definition
+#if 1 // gobject definition :: ${ClassName}
 
-G_DECLARE_FINAL_TYPE( ${ClassName}, ${class_name}, ${NAMESPACE}, ${CLASS_NAME:${#NAMESPACE}+1}, ${ParentClassName} )
+${no_outdir:+"static"} G_DECLARE_FINAL_TYPE( ${ClassName}, ${class_name}, ${NAMESPACE}, ${CLASS_NAME:${#NAMESPACE}+1}, ${ParentClassName} )${no_outdir:+";"}
 
-${ClassName}* ${class_name}_new();
+${outdir:+"${ClassName}* ${class_name}_new();"}
 
 ${outdir:+"#endif"}
 
@@ -91,7 +91,7 @@ ${outdir:+"G_END_DECLS"}
 
 	local code_snippets_source="${outdir:+"#include \"${ClassName}.h\""}
 
-${outdir:+"#if 1 // gobject definition"}
+${outdir:+"#if 1 // gobject definition :: ${ClassName}"}
 
 struct _${ClassName} {
 	${ParentClassName} parent_instance;
@@ -143,7 +143,7 @@ static void ${class_name}_class_init(${ClassName}Class* klass) {
 
 #if 1 // public function
 
-${ClassName}* ${class_name}_new() {
+${no_outdir:+"static"} ${ClassName}* ${class_name}_new() {
 	${ClassName}* self = g_object_new( ${class_name}_get_type(), NULL );
 	return self;
 }

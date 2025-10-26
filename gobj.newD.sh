@@ -75,15 +75,15 @@ ${outdir:+"#include \"stdafx.h\""}
 
 ${outdir:+"G_BEGIN_DECLS"}
 
-#if 1 // gobject definition
+#if 1 // gobject definition :: ${ClassName}
 
-G_DECLARE_DERIVABLE_TYPE( ${ClassName}, ${class_name}, ${NAMESPACE}, ${CLASS_NAME:${#NAMESPACE}+1}, ${ParentClassName} )
+${no_outdir:+"static"} G_DECLARE_DERIVABLE_TYPE( ${ClassName}, ${class_name}, ${NAMESPACE}, ${CLASS_NAME:${#NAMESPACE}+1}, ${ParentClassName} )${no_outdir:+";"}
 
 struct _${ClassName}Class {
 	${ParentClassName}Class parent_instance;
 };
 
-${ClassName}* ${class_name}_new();
+${outdir:+"${ClassName}* ${class_name}_new();"}
 
 ${outdir:+"#endif"}
 
@@ -93,7 +93,7 @@ ${outdir:+"G_END_DECLS"}
 
 	local code_snippets_source="${outdir:+"#include \"${ClassName}.h\""}
 
-${outdir:+"#if 1 // gobject definition"}
+${outdir:+"#if 1 // gobject definition :: ${ClassName}"}
 
 typedef struct {
 	int spik;
@@ -106,10 +106,10 @@ enum {
 
 G_DEFINE_TYPE_WITH_PRIVATE( ${ClassName}, ${class_name}, ${parent_class_name}_get_type() )
 
-#define SELF_PRIVATE ${class_name}_get_instance_private
-#define SELFDATAVAL( SELF, NAME ) ${ClassName}Private* NAME = SELF_PRIVATE( ( SELF ) )
-#define SELFDATA2( SELF ) ( ( ${ClassName}Private* )SELF_PRIVATE( ( SELF ) ) )
-#define SELFDATA SELFDATA2( self )
+#define ${no_outdir:+"${CLASS_NAME}_"}SELF_PRIVATE ${class_name}_get_instance_private
+#define ${no_outdir:+"${CLASS_NAME}_"}SELFDATAVAL( SELF, NAME ) ${ClassName}Private* NAME = ${no_outdir:+"${CLASS_NAME}_"}SELF_PRIVATE( ( SELF ) )
+#define ${no_outdir:+"${CLASS_NAME}_"}SELFDATA2( SELF ) ( ( ${ClassName}Private* )${no_outdir:+"${CLASS_NAME}_"}SELF_PRIVATE( ( SELF ) ) )
+#define ${no_outdir:+"${CLASS_NAME}_"}SELFDATA ${no_outdir:+"${CLASS_NAME}_"}SELFDATA2( self )
 
 #if 1 // static function
 
@@ -136,7 +136,7 @@ static void ${class_name}_finalize( GObject* object ) {
 }
 
 static void ${class_name}_init(${ClassName}* self) {
-	${ClassName}Private* priv = SELFDATA;
+	${ClassName}Private* priv = ${no_outdir:+"${CLASS_NAME}_"}SELFDATA;
 }
 
 static void ${class_name}_class_init(${ClassName}Class* klass) {
@@ -152,7 +152,7 @@ static void ${class_name}_class_init(${ClassName}Class* klass) {
 
 #if 1 // public function
 
-${ClassName}* ${class_name}_new() {
+${no_outdir:+"static"} ${ClassName}* ${class_name}_new() {
 	${ClassName}* self = g_object_new( ${class_name}_get_type(), NULL );
 	return self;
 }
