@@ -110,6 +110,24 @@ G_DEFINE_TYPE( ${ClassName}, ${class_name}, ${parent_class_name}_get_type() )
 
 #if 1 // base class virtual function
 
+static void ${class_name}_set_property( GObject* object, guint property_id, const GValue* value, GParamSpec* pspec )
+{
+	${ClassName}* self = ( ${ClassName}* )object;
+
+	switch ( property_id ) {
+		default: G_OBJECT_WARN_INVALID_PROPERTY_ID( object, property_id, pspec ); break;
+	}
+}
+
+static void ${class_name}_get_property( GObject* object, guint property_id, GValue* value, GParamSpec* pspec )
+{
+	${ClassName}* self = ( ${ClassName}* )object;
+
+	switch ( property_id ) {
+		default: G_OBJECT_WARN_INVALID_PROPERTY_ID( object, property_id, pspec ); break;
+	}
+}
+
 static void ${class_name}_constructed( GObject* object ) {
 	${ClassName}* self = ( ${ClassName}* )object;
 
@@ -137,6 +155,8 @@ static void ${class_name}_class_init(${ClassName}Class* klass) {
 	base_class->constructed = ${class_name}_constructed;
 	base_class->dispose = ${class_name}_dispose;
 	base_class->finalize = ${class_name}_finalize;
+	base_class->set_property = ${class_name}_set_property;
+	base_class->get_property = ${class_name}_get_property;
 }
 
 #endif
